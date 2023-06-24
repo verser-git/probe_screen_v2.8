@@ -9,12 +9,12 @@ Probe Screen v2.8 update has been released.
 - First attempt to support metric and imperial systems
 - Support for Axis and Gmoccapy interfaces for screen sizes from 1280x1024
 - Included some additions from the PSNG development team
-- Added a number of useful features (see screensave)
+- Added a number of useful features
 
 ## Install
 
 1. See "psng/install_del_from_your.hal"
-   Delete (or comment out) from all .hal files lines of the form:
+   Delete (or comment) from all .hal files lines of the form:
 
    ```sh
    #loadusr -W hal_manualtoolchange
@@ -32,13 +32,13 @@ Probe Screen v2.8 update has been released.
    /psng
    ```
 
-4. Only for [DISPLAY] = axis: Copy .axisrc to your home ~/ folder. If you are already using .axisrc, then only add to your file contents of this .axisrc.
+4. Only for DISPLAY = axis: Copy .axisrc to your home ~/ folder. If you are already using .axisrc, then only add to your file contents of this .axisrc.
 
-## Notes for [DISPLAY] = axis
+## Notes for DISPLAY = axis
 
 By default, the Probe Screen doesn't fit in the 1280x1024 screen a bit, so some tweaks have been made to the .axisrc to expand the area. Details in axis_prepare folder.
 
-## Notes for [DISPLAY] = gmoccapy
+## Notes for DISPLAY = gmoccapy
 
 Gmoccapy intercepts MANUAL-MDI-AUTO mode switching events and closes the Probe Screen.
 To avoid this, editing with root rights of the system file /usr/bin/gmoccapy is required

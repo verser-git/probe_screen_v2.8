@@ -1,4 +1,4 @@
-# Notes for [DISPLAY] = axis
+# Notes for DISPLAY = axis
 
 By default, the Probe Screen doesn't fit in 1280x1024 screen a bit, so add to beginning of .axisrc to expand the area
 

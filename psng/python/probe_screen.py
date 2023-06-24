@@ -2902,7 +2902,7 @@ class ProbeScreen(object):
             d=diam,
         )
         # move to finded  point
-        s = "G1 Y%f" % ycres
+        s = "G1 Y%f M5" % ycres
         if self.gcode(s) == -1:
             return
 

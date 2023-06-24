@@ -74,7 +74,6 @@ O8 do
     O9 endif
 
     ; Move away
-    F[#<_ini[TOOLSENSOR]RAPID_SPEED>]
     O13 if [#<search_axis> EQ 1]
         ; X Axis
         G1 X[-#<_hal[probe.ps_probe_latch]>*#<search_direction>]
@@ -142,8 +141,10 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
             #<count> = [99] 
         O84 endif
 
-        ; Move away 
-        F[#<_ini[TOOLSENSOR]RAPID_SPEED>]
+        ; Set Search Feed Rate
+        F[#<_hal[probe.ps_searchvel]>]
+
+        ; Move away and allow a half second for the probe to clear
         O24 if [#<search_axis> EQ 1]
             ; X Axis
             G1 X[-#<_hal[probe.ps_probe_latch]>*#<search_direction>]

@@ -2556,11 +2556,11 @@ class gmoccapy(object):
 
     def on_hal_status_mode_manual(self, widget):
         print ("MANUAL Mode")
-        if self.widgets.tbtn_user_tabs.get_active():
-            return
         self.widgets.rbt_manual.set_active(True)
         # if setup page is activated, we must leave here, otherwise the pages will be reset
         if self.widgets.tbtn_setup.get_active():
+            return
+        if self.widgets.tbtn_user_tabs.get_active():
             return
         # if we are in user tabs, we must reset the button
         if self.widgets.tbtn_user_tabs.get_active():
@@ -2579,10 +2579,6 @@ class gmoccapy(object):
 
     def on_hal_status_mode_mdi(self, widget):
         print ("MDI Mode", self.tool_change)
-#        print ("MDI Mode=",self.widgets.ntb_user_tabs.get_nth_page(self.widgets.ntb_user_tabs.get_current_page()).get_plug_window().get_children().text)
-        if self.widgets.tbtn_user_tabs.get_active():
-            return
-
         # if the edit offsets button is active, we do not want to change
         # pages, as the user may want to edit several axis values
         if self.touch_button_dic["edit_offsets"].get_active():
@@ -2610,6 +2606,8 @@ class gmoccapy(object):
         else:
             # if we are in user tabs, we must reset the button
             if self.widgets.tbtn_user_tabs.get_active():
+                return
+            if self.widgets.tbtn_user_tabs.get_active():
                 self.widgets.tbtn_user_tabs.set_active(False)
             if self.widgets.chk_use_kb_on_mdi.get_active():
                 self.widgets.ntb_info.set_current_page(1)
@@ -2630,8 +2628,6 @@ class gmoccapy(object):
 
     def on_hal_status_mode_auto(self, widget):
         print ("AUTO Mode")
-        if self.widgets.tbtn_user_tabs.get_active():
-            return
         # if Auto button is not sensitive, we are not ready for AUTO commands
         # so we have to abort external commands and get back to manual mode
         # This will happen mostly, if we are in settings mode, as we do disable the mode button
@@ -2642,6 +2638,8 @@ class gmoccapy(object):
             self._show_error((13, _("It is not possible to change to Auto Mode at the moment")))
             return
         else:
+            if self.widgets.tbtn_user_tabs.get_active():
+                return
             # if we are in user tabs, we must reset the button
             if self.widgets.tbtn_user_tabs.get_active():
                 self.widgets.tbtn_user_tabs.set_active(False)
