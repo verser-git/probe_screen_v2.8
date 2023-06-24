@@ -1,7 +1,8 @@
 # About Stop move when probe tripped
 
 Linuxcnc v2.8 stops move when probe tripped for safety in all modes. This is a good approach.
-It is possible to exclude stops in AUTO mode, i.e. when the g-code program is being executed, without the participation of a human operator.
+It is possible to exclude stops in AUTO mode, i.e. when the g-code program is being executed.
+
 We can use 'demux' to convert the motion-mode into a bit output, though inconveniently motion-type is signed and demux wants unsigned, so we need to also use 'conv_s32_u32' and also an 'and2' 'or2' 'not' to disable the probe input in AUTO mode.
 To do this, you need to add the .hal file of your machine with the functions and connections below.
 Please match the quantities and numbers of each function to your configuration if they are already in use.
