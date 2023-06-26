@@ -2,7 +2,7 @@
 
 ## Info
 
-Probe Screen v2.8 update has been released.
+Probe Screen v2.8 - all commonly used probe macros on one stylish screen, intuitive look, with minimal steps to set up.
 
 Сhanges:
 - Created for linuxcnc v2.8
