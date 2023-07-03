@@ -63,6 +63,7 @@ class ProbeScreen(object):
         self.stat = linuxcnc.stat()
         self.stat.poll()
 
+        
         # History Area
         textarea = builder.get_object("textview1")
         self.buffer = textarea.get_property("buffer")
@@ -102,38 +103,7 @@ class ProbeScreen(object):
         self.spbtn1_probe_diam = self.builder.get_object("spbtn1_probe_diam")
         self.spbtn1_xy_clearance = self.builder.get_object("spbtn1_xy_clearance")
         self.spbtn1_edge_length = self.builder.get_object("spbtn1_edge_length")
-
-        if self.inifile.find("TRAJ", "LINEAR_UNITS") not in ["metric", "mm"]:
-            # default values for inches
-            tup = (20.0, 2.0, 0.5, 1.0, 0.1, 0.125, 1.0, 1.25)
-        else:
-            tup = (300.0, 10.0, 3.0, 1.0, 0.5, 2.0, 5.0, 5.0)
-
-        self.spbtn1_search_vel.set_value(
-            self.prefs.getpref("ps_searchvel", tup[0], float)
-        )
-        self.spbtn1_probe_vel.set_value(
-            self.prefs.getpref("ps_probevel", tup[1], float)
-        )
-        self.spbtn1_z_clearance.set_value(
-            self.prefs.getpref("ps_z_clearance", tup[2], float)
-        )
-        self.spbtn1_probe_max.set_value(
-            self.prefs.getpref("ps_probe_max", tup[3], float)
-        )
-        self.spbtn1_probe_latch.set_value(
-            self.prefs.getpref("ps_probe_latch", tup[4], float)
-        )
-        self.spbtn1_probe_diam.set_value(
-            self.prefs.getpref("ps_probe_diam", tup[5], float)
-        )
-        self.spbtn1_xy_clearance.set_value(
-            self.prefs.getpref("ps_xy_clearance", tup[6], float)
-        )
-        self.spbtn1_edge_length.set_value(
-            self.prefs.getpref("ps_edge_length", tup[7], float)
-        )
-
+        
         self.halcomp.newpin("ps_searchvel", hal.HAL_FLOAT, hal.HAL_OUT)
         self.halcomp.newpin("ps_probevel", hal.HAL_FLOAT, hal.HAL_OUT)
         self.halcomp.newpin("ps_z_clearance", hal.HAL_FLOAT, hal.HAL_OUT)
@@ -142,16 +112,8 @@ class ProbeScreen(object):
         self.halcomp.newpin("ps_probe_diam", hal.HAL_FLOAT, hal.HAL_OUT)
         self.halcomp.newpin("ps_xy_clearance", hal.HAL_FLOAT, hal.HAL_OUT)
         self.halcomp.newpin("ps_edge_length", hal.HAL_FLOAT, hal.HAL_OUT)
+        # spbtn initialization --> self.on_ps_hal_stat_metric_mode_changed
 
-
-        self.halcomp["ps_searchvel"] = self.spbtn1_search_vel.get_value()
-        self.halcomp["ps_probevel"] = self.spbtn1_probe_vel.get_value()
-        self.halcomp["ps_z_clearance"] = self.spbtn1_z_clearance.get_value()
-        self.halcomp["ps_probe_max"] = self.spbtn1_probe_max.get_value()
-        self.halcomp["ps_probe_latch"] = self.spbtn1_probe_latch.get_value()
-        self.halcomp["ps_probe_diam"] = self.spbtn1_probe_diam.get_value()
-        self.halcomp["ps_xy_clearance"] = self.spbtn1_xy_clearance.get_value()
-        self.halcomp["ps_edge_length"] = self.spbtn1_edge_length.get_value()
 
         # Init Delay compensation parameters
         self.spbtn_signal_delay = self.builder.get_object("spbtn_signal_delay")
@@ -256,22 +218,17 @@ class ProbeScreen(object):
         self.spbtn_offs_y = self.builder.get_object("spbtn_offs_y")
         self.spbtn_offs_z = self.builder.get_object("spbtn_offs_z")
 
-        self.chk_set_zero.set_active(self.prefs.getpref("chk_set_zero", False, bool))
-        self.spbtn_offs_x.set_value(self.prefs.getpref("ps_offs_x", 0.0, float))
-        self.spbtn_offs_y.set_value(self.prefs.getpref("ps_offs_y", 0.0, float))
-        self.spbtn_offs_z.set_value(self.prefs.getpref("ps_offs_z", 0.0, float))
-
         self.halcomp.newpin("chk_set_zero", hal.HAL_BIT, hal.HAL_OUT)
         self.halcomp.newpin("ps_offs_x", hal.HAL_FLOAT, hal.HAL_OUT)
         self.halcomp.newpin("ps_offs_y", hal.HAL_FLOAT, hal.HAL_OUT)
         self.halcomp.newpin("ps_offs_z", hal.HAL_FLOAT, hal.HAL_OUT)
 
+        self.chk_set_zero.set_active(self.prefs.getpref("chk_set_zero", False, bool))
+
         if self.chk_set_zero.get_active():
             self.halcomp["chk_set_zero"] = True
             self.hal_led_set_zero.hal_pin.set(1)
-        self.halcomp["ps_offs_x"] = self.spbtn_offs_x.get_value()
-        self.halcomp["ps_offs_y"] = self.spbtn_offs_y.get_value()
-        self.halcomp["ps_offs_z"] = self.spbtn_offs_z.get_value()
+        # spbtn initialization --> self.on_ps_hal_stat_metric_mode_changed
 
 
         #---------------------------
@@ -283,21 +240,15 @@ class ProbeScreen(object):
         self.spbtn_arm_delta_y = self.builder.get_object("spbtn_arm_delta_y")
         self.btn_arm_is_zero = self.builder.get_object("btn_arm_is_zero")
         self.btn_spindle_is_zero = self.builder.get_object("btn_spindle_is_zero")
-        self.spbtn_offs_x = self.builder.get_object("spbtn_offs_x")
-        self.spbtn_offs_y = self.builder.get_object("spbtn_offs_y")
-
-        self.chk_arm_enable.set_active(self.prefs.getpref("chk_arm_enable", False, bool))
-        self.spbtn_arm_delta_x.set_value(self.prefs.getpref("ps_arm_delta_x", 0.0, float))
-        self.spbtn_arm_delta_y.set_value(self.prefs.getpref("ps_arm_delta_y", 0.0, float))
 
         self.halcomp.newpin("chk_arm_enable", hal.HAL_BIT, hal.HAL_OUT)
         self.halcomp.newpin("ps_arm_delta_x", hal.HAL_FLOAT, hal.HAL_OUT)
         self.halcomp.newpin("ps_arm_delta_y", hal.HAL_FLOAT, hal.HAL_OUT)
 
+        self.chk_arm_enable.set_active(self.prefs.getpref("chk_arm_enable", False, bool))
+
         self.halcomp["chk_arm_enable"] = self.chk_arm_enable.get_active()
         self.hal_led_arm_enable.hal_pin.set(self.chk_arm_enable.get_active())
-        self.halcomp["ps_arm_delta_x"] = self.spbtn_arm_delta_x.get_value()
-        self.halcomp["ps_arm_delta_y"] = self.spbtn_arm_delta_y.get_value()
         if self.chk_arm_enable.get_active():
             self.spbtn_arm_delta_x.set_sensitive( True )
             self.spbtn_arm_delta_y.set_sensitive( True )
@@ -308,6 +259,7 @@ class ProbeScreen(object):
             self.spbtn_arm_delta_y.set_sensitive( False )
             self.btn_arm_is_zero.set_sensitive( False )
             self.btn_spindle_is_zero.set_sensitive( False ) 
+        # spbtn initialization --> self.on_ps_hal_stat_metric_mode_changed
 
 
         #---------------------------
@@ -323,6 +275,8 @@ class ProbeScreen(object):
         self.jog_increments = []  # This holds the increment values
         self.distance = 0  # This global will hold the jog distance
         self.halcomp.newpin("jog-increment", hal.HAL_FLOAT, hal.HAL_OUT)
+        
+        self.faktor = 1.0              # needed to calculate velocities
 
         self._init_jog_increments()
 
@@ -350,7 +304,19 @@ class ProbeScreen(object):
         hal_glib.GPin(pin).connect("value_changed", self.on_tool_change)
 
         self._init_tool_sensor_data()
-
+        # spbtn initialization --> self.on_ps_hal_stat_metric_mode_changed
+        
+        # --------------------------
+        #  MM vs INCH
+        # --------------------------
+        self.halcomp.newpin("ps_metric_mode", hal.HAL_BIT, hal.HAL_OUT)        
+        self.halcomp["ps_metric_mode"] = self.prefs.getpref("ps_metric_mode", self.stat.program_units-1, bool) 
+        # Set units before any moves or probes
+        if ((self.stat.program_units-1) == 1):
+            self.setunits = "G21"
+        else:
+            self.setunits = "G20"
+        self.on_ps_hal_stat_metric_mode_changed(self, self.stat.program_units-1)
 
 
     # --------------------------
@@ -451,7 +417,110 @@ class ProbeScreen(object):
         print("****  probe_screen GETINIINFO **** \n Preference file path: %s" % temp)
         return temp
 
+    def on_ps_hal_stat_metric_mode_changed(self, widget, metric_units):
+        #  metric_units:
+        #  = False                         # imperial units are active
+        #  = True                           # metric units are active
+        # for first call
+        if metric_units != self.halcomp["ps_metric_mode"]:
+            # metric_units = metric
+            if metric_units:
+                self.faktor = 25.4
+            # metric_units = imperial
+            else:
+                self.faktor = (1.0 / 25.4)
 
+        else:
+            # display units equal machine units would be factor = 1,
+            self.faktor = 1.0
+
+#        print("ps_hal_stat_metric_mode_changed", "  self.stat.linear_units = ", self.stat.linear_units)
+#        print("metric_units = ",metric_units, "ps_metric_mode = ",self.halcomp["ps_metric_mode"], "faktor =",self.faktor )
+        if metric_units:
+            self.setunits = "G21"
+            # Settings
+            # default values for mm
+            tup = (300.0, 10.0, 4.0, 0.6, 2.0, 2.5, 2.5, 6.0)
+            self.spbtn1_search_vel.set_digits(1)
+            self.spbtn1_probe_vel.set_digits(2)
+            self.spbtn1_z_clearance.set_digits(3)
+            self.spbtn1_probe_max.set_digits(3)
+            self.spbtn1_probe_latch.set_digits(3)
+            self.spbtn1_probe_diam.set_digits(3)
+            self.spbtn1_xy_clearance.set_digits(3)
+            self.spbtn1_edge_length.set_digits(3)
+            # Zero
+            self.spbtn_offs_x.set_digits(3)
+            self.spbtn_offs_y.set_digits(3)
+            self.spbtn_offs_z.set_digits(3)
+            # Arm
+            self.spbtn_arm_delta_x.set_digits(3)
+            self.spbtn_arm_delta_y.set_digits(3)
+            # Remap M6
+            self.spbtn_setter_height.set_digits(3)
+            self.spbtn_block_height.set_digits(3)
+        else:
+            self.setunits = "G20"
+            # Settings
+            # default values for inches
+            tup = (120.0, 4.0, 1.58, 1.0, 0.787, 1.0, 1.0, 2.4)
+            self.spbtn1_search_vel.set_digits(2)
+            self.spbtn1_probe_vel.set_digits(3)
+            self.spbtn1_z_clearance.set_digits(4)
+            self.spbtn1_probe_max.set_digits(4)
+            self.spbtn1_probe_latch.set_digits(4)
+            self.spbtn1_probe_diam.set_digits(4)
+            self.spbtn1_xy_clearance.set_digits(4)
+            self.spbtn1_edge_length.set_digits(4)
+            # Zero
+            self.spbtn_offs_x.set_digits(4)
+            self.spbtn_offs_y.set_digits(4)
+            self.spbtn_offs_z.set_digits(4)
+            # Arm
+            self.spbtn_arm_delta_x.set_digits(4)
+            self.spbtn_arm_delta_y.set_digits(4)
+            # Remap M6
+            self.spbtn_setter_height.set_digits(4)
+            self.spbtn_block_height.set_digits(4)
+
+        # Settings
+        self.spbtn1_search_vel.set_value(self.prefs.getpref("ps_searchvel", tup[0], float) * self.faktor)
+        self.spbtn1_probe_vel.set_value(self.prefs.getpref("ps_probevel", tup[1], float) * self.faktor)
+        self.spbtn1_z_clearance.set_value(self.prefs.getpref("ps_z_clearance", tup[2], float) * self.faktor)
+        self.spbtn1_probe_max.set_value(self.prefs.getpref("ps_probe_max", tup[3], float) * self.faktor)
+        self.spbtn1_probe_latch.set_value(self.prefs.getpref("ps_probe_latch", tup[4], float) * self.faktor)
+        self.spbtn1_probe_diam.set_value(self.prefs.getpref("ps_probe_diam", tup[5], float) * self.faktor)
+        self.spbtn1_xy_clearance.set_value(self.prefs.getpref("ps_xy_clearance", tup[6], float) * self.faktor)
+        self.spbtn1_edge_length.set_value(self.prefs.getpref("ps_edge_length", tup[7], float) * self.faktor)
+        self.halcomp["ps_searchvel"] = self.spbtn1_search_vel.get_value()
+        self.halcomp["ps_probevel"] = self.spbtn1_probe_vel.get_value()
+        self.halcomp["ps_z_clearance"] = self.spbtn1_z_clearance.get_value()
+        self.halcomp["ps_probe_max"] = self.spbtn1_probe_max.get_value()
+        self.halcomp["ps_probe_latch"] = self.spbtn1_probe_latch.get_value()
+        self.halcomp["ps_probe_diam"] = self.spbtn1_probe_diam.get_value()
+        self.halcomp["ps_xy_clearance"] = self.spbtn1_xy_clearance.get_value()
+        self.halcomp["ps_edge_length"] = self.spbtn1_edge_length.get_value()
+        # Zero
+        self.spbtn_offs_x.set_value(self.prefs.getpref("ps_offs_x", 0.0, float) * self.faktor)
+        self.spbtn_offs_y.set_value(self.prefs.getpref("ps_offs_y", 0.0, float) * self.faktor)
+        self.spbtn_offs_z.set_value(self.prefs.getpref("ps_offs_z", 0.0, float) * self.faktor)
+        self.halcomp["ps_offs_x"] = self.spbtn_offs_x.get_value()
+        self.halcomp["ps_offs_y"] = self.spbtn_offs_y.get_value()
+        self.halcomp["ps_offs_z"] = self.spbtn_offs_z.get_value()
+        # Arm
+        self.spbtn_arm_delta_x.set_value(self.prefs.getpref("ps_arm_delta_x", 0.0, float) * self.faktor)
+        self.spbtn_arm_delta_y.set_value(self.prefs.getpref("ps_arm_delta_y", 0.0, float) * self.faktor)
+        self.halcomp["ps_arm_delta_x"] = self.spbtn_arm_delta_x.get_value()
+        self.halcomp["ps_arm_delta_y"] = self.spbtn_arm_delta_y.get_value()
+        # Remap M6
+        self.spbtn_setter_height.set_value(self.prefs.getpref("setterheight", 0.0, float) * self.faktor)
+        self.spbtn_block_height.set_value(self.prefs.getpref("blockheight", 0.0, float) * self.faktor)
+        self.halcomp["setterheight"] = self.spbtn_setter_height.get_value()
+        self.halcomp["blockheight"] = self.spbtn_block_height.get_value()
+
+        # Save units
+        self.halcomp["ps_metric_mode"] = metric_units 
+        self.prefs.putpref("ps_metric_mode", metric_units, bool) 
 
     # --------------------------
     #
@@ -565,9 +634,11 @@ class ProbeScreen(object):
     # --------------------------
     def z_clearance_down(self, data=None):
         # move Z - z_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 Z-%f
         G90""" % (
+            self.setunits, 
             self.halcomp["ps_z_clearance"]
         )
         if self.gcode(s) == -1:
@@ -576,9 +647,11 @@ class ProbeScreen(object):
 
     def z_clearance_up(self, data=None):
         # move Z + z_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 Z%f
         G90""" % (
+            self.setunits, 
             self.halcomp["ps_z_clearance"]
         )
         if self.gcode(s) == -1:
@@ -636,10 +709,19 @@ class ProbeScreen(object):
         g5x_offset = list(self.stat.g5x_offset)
         g92_offset = list(self.stat.g92_offset)
         tool_offset = list(self.stat.tool_offset)
+        # self.stat.linear_units will return machine units: 1.0 for metric and 1/25,4 for imperial
+        # self.halcomp["ps_metric_mode"] is display units
+        factor=1
+        if self.halcomp["ps_metric_mode"] != int(self.stat.linear_units):
+            if self.halcomp["ps_metric_mode"]:
+                factor = 25.4
+            else:
+                factor = (1.0 / 25.4)
+        
         for i in range(0, len(probed_position) - 1):
             coord[i] = (
                 probed_position[i] - g5x_offset[i] - g92_offset[i] - tool_offset[i]
-            )
+            )*factor
         # Eliminating the extra travel caused by the signal delay
         if "xplus" in s:
             N_axis=0
@@ -669,7 +751,7 @@ class ProbeScreen(object):
                 extra_travel = self.spbtn1_search_vel.get_value() * self.spbtn_signal_delay.get_value() * direction / 60000
             coord[N_axis] = coord[N_axis] - extra_travel
             # Set Last overmove Label 
-            self.label_val_overmove.set_text( "%.5f" % extra_travel )            
+            self.label_val_overmove.set_text( " = %.5f" % extra_travel )            
         
         angl = self.stat.rotation_xy
         res = self._rott00_point(coord[0], coord[1], -angl)
@@ -882,7 +964,7 @@ class ProbeScreen(object):
             self.label_overmove.set_visible(False)
         else:
             self.label_val_overmove.set_visible(True)
-            self.label_val_overmove.set_text("0")
+            self.label_val_overmove.set_text(" = 0")
             self.label_overmove.set_visible(True)
 
         
@@ -912,10 +994,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_xp_released(self, gtkbutton, data=None):
         # move X - xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f
         G90""" % (
-            self.halcomp["ps_xy_clearance"]
+            self.setunits, self.halcomp["ps_xy_clearance"]
         )
         if self.gcode(s) == -1:
             return
@@ -945,10 +1028,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_yp_released(self, gtkbutton, data=None):
         # move Y - xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 Y-%f
         G90""" % (
-            self.halcomp["ps_xy_clearance"]
+            self.setunits, self.halcomp["ps_xy_clearance"]
         )
         if self.gcode(s) == -1:
             return
@@ -978,10 +1062,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_xm_released(self, gtkbutton, data=None):
         # move X + xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 X%f
         G90""" % (
-            self.halcomp["ps_xy_clearance"]
+            self.setunits, self.halcomp["ps_xy_clearance"]
         )
         if self.gcode(s) == -1:
             return
@@ -1011,10 +1096,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_ym_released(self, gtkbutton, data=None):
         # move Y + xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 Y%f
         G90""" % (
-            self.halcomp["ps_xy_clearance"]
+            self.setunits, self.halcomp["ps_xy_clearance"]
         )
         if self.gcode(s) == -1:
             return
@@ -1046,9 +1132,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_xpyp_released(self, gtkbutton, data=None):
         # move X - xy_clearance Y + edge_length
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f Y%f
         G90""" % (
+            self.setunits, 
             self.halcomp["ps_xy_clearance"],
             self.halcomp["ps_edge_length"],
         )
@@ -1069,9 +1157,11 @@ class ProbeScreen(object):
 
         # move X + edge_length +xy_clearance,  Y - edge_length - xy_clearance
         tmpxy = self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X%f Y-%f
         G90""" % (
+            self.setunits, 
             tmpxy,
             tmpxy,
         )
@@ -1107,9 +1197,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_xpym_released(self, gtkbutton, data=None):
         # move X - xy_clearance Y + edge_length
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f Y-%f
         G90""" % (
+            self.setunits, 
             self.halcomp["ps_xy_clearance"],
             self.halcomp["ps_edge_length"],
         )
@@ -1130,9 +1222,11 @@ class ProbeScreen(object):
 
         # move X + edge_length +xy_clearance,  Y + edge_length + xy_clearance
         tmpxy = self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X%f Y%f
         G90""" % (
+            self.setunits, 
             tmpxy,
             tmpxy,
         )
@@ -1169,9 +1263,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_xmyp_released(self, gtkbutton, data=None):
         # move X + xy_clearance Y + edge_length
-        s = """G91
+        s = """%s
+        G91
         G1 X%f Y%f
         G90""" % (
+            self.setunits, 
             self.halcomp["ps_xy_clearance"],
             self.halcomp["ps_edge_length"],
         )
@@ -1192,9 +1288,11 @@ class ProbeScreen(object):
 
         # move X - edge_length - xy_clearance,  Y - edge_length - xy_clearance
         tmpxy = self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f Y-%f
         G90""" % (
+            self.setunits, 
             tmpxy,
             tmpxy,
         )
@@ -1229,9 +1327,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_xmym_released(self, gtkbutton, data=None):
         # move X + xy_clearance Y - edge_length
-        s = """G91
+        s = """%s
+        G91
         G1 X%f Y-%f
         G90""" % (
+            self.setunits, 
             self.halcomp["ps_xy_clearance"],
             self.halcomp["ps_edge_length"],
         )
@@ -1253,9 +1353,11 @@ class ProbeScreen(object):
 
         # move X - edge_length - xy_clearance,  Y + edge_length + xy_clearance
         tmpxy = self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f Y%f
         G90""" % (
+            self.setunits, 
             tmpxy,
             tmpxy,
         )
@@ -1291,9 +1393,11 @@ class ProbeScreen(object):
     def on_xy_center_released(self, gtkbutton, data=None):
         # move X - edge_length- xy_clearance
         tmpx = self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f
         G90""" % (
+            self.setunits, 
             tmpx
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
@@ -1313,9 +1417,11 @@ class ProbeScreen(object):
 
         # move X + 2 edge_length + 2 xy_clearance
         tmpx = 2 * (self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"])
-        s = """G91
+        s = """%s
+        G91
         G1 X%f
         G90""" % (
+            self.setunits, 
             tmpx
         )
         if self.gcode(s, 2*self.halcomp["ps_edge_length"]) == -1:
@@ -1343,9 +1449,11 @@ class ProbeScreen(object):
 
         # move Y - edge_length- xy_clearance
         tmpy = self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 Y-%f
         G90""" % (
+            self.setunits, 
             tmpy
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
@@ -1366,9 +1474,11 @@ class ProbeScreen(object):
 
         # move Y + 2 edge_length + 2 xy_clearance
         tmpy = 2 * (self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"])
-        s = """G91
+        s = """%s
+        G91
         G1 Y%f
         G90""" % (
+            self.setunits, 
             tmpy
         )
         if self.gcode(s, 2*self.halcomp["ps_edge_length"]) == -1:
@@ -1422,9 +1532,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_xpyp1_released(self, gtkbutton, data=None):
         # move Y - edge_length X - xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f Y-%f
         G90""" % (
+            self.setunits, 
             self.halcomp["ps_xy_clearance"],
             self.halcomp["ps_edge_length"],
         )
@@ -1441,9 +1553,11 @@ class ProbeScreen(object):
 
         # move X - edge_length Y - xy_clearance
         tmpxy = self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f Y%f
         G90""" % (
+            self.setunits, 
             tmpxy,
             tmpxy,
         )
@@ -1478,9 +1592,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_xpym1_released(self, gtkbutton, data=None):
         # move Y + edge_length X - xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f Y%f
         G90""" % (
+            self.setunits, 
             self.halcomp["ps_xy_clearance"],
             self.halcomp["ps_edge_length"],
         )
@@ -1497,9 +1613,11 @@ class ProbeScreen(object):
 
         # move X - edge_length Y + xy_clearance
         tmpxy = self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f Y-%f
         G90""" % (
+            self.setunits, 
             tmpxy,
             tmpxy,
         )
@@ -1536,9 +1654,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_xmyp1_released(self, gtkbutton, data=None):
         # move Y - edge_length X + xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 X%f Y-%f
         G90""" % (
+            self.setunits, 
             self.halcomp["ps_xy_clearance"],
             self.halcomp["ps_edge_length"],
         )
@@ -1556,9 +1676,11 @@ class ProbeScreen(object):
 
         # move X + edge_length Y - xy_clearance
         tmpxy = self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X%f Y%f
         G90""" % (
+            self.setunits, 
             tmpxy,
             tmpxy,
         )
@@ -1595,9 +1717,11 @@ class ProbeScreen(object):
     @ensure_errors_dismissed
     def on_xmym1_released(self, gtkbutton, data=None):
         # move Y + edge_length X + xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 X%f Y%f
         G90""" % (
+            self.setunits, 
             self.halcomp["ps_xy_clearance"],
             self.halcomp["ps_edge_length"],
         )
@@ -1614,9 +1738,11 @@ class ProbeScreen(object):
 
         # move X + edge_length Y - xy_clearance
         tmpxy = self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X%f Y-%f
         G90""" % (
+            self.setunits, 
             tmpxy,
             tmpxy,
         )
@@ -1657,9 +1783,11 @@ class ProbeScreen(object):
             return
         # move X - edge_length Y + xy_clearance
         tmpx = self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f
         G90""" % (
+            self.setunits, 
             tmpx
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
@@ -1673,9 +1801,11 @@ class ProbeScreen(object):
 
         # move X +2 edge_length - 2 xy_clearance
         tmpx = 2 * (self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"])
-        s = """G91
+        s = """%s
+        G91
         G1 X%f
         G90""" % (
+            self.setunits, 
             tmpx
         )
         if self.gcode(s, 2*self.halcomp["ps_edge_length"]) == -1:
@@ -1695,9 +1825,11 @@ class ProbeScreen(object):
 
         # move Y - edge_length + xy_clearance
         tmpy = self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 Y-%f
         G90""" % (
+            self.setunits, 
             tmpy
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
@@ -1711,9 +1843,11 @@ class ProbeScreen(object):
 
         # move Y +2 edge_length - 2 xy_clearance
         tmpy = 2 * (self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"])
-        s = """G91
+        s = """%s
+        G91
         G1 Y%f
         G90""" % (
+            self.setunits, 
             tmpy
         )
         if self.gcode(s, 2*self.halcomp["ps_edge_length"]) == -1:
@@ -1764,10 +1898,11 @@ class ProbeScreen(object):
     def on_lx_out_released(self, gtkbutton, data=None):
         # move X - edge_length- xy_clearance
         tmpx = self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f
         G90""" % (
-            tmpx
+            self.setunits, tmpx
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
             return
@@ -1790,10 +1925,11 @@ class ProbeScreen(object):
 
         # move X + 2 edge_length +  xy_clearance
         tmpx = 2 * self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X%f
         G90""" % (
-            tmpx
+            self.setunits, tmpx
         )
         if self.gcode(s, 2*self.halcomp["ps_edge_length"]) == -1:
             return
@@ -1822,17 +1958,18 @@ class ProbeScreen(object):
         s = "G1 X%f" % (xcres)
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
             return
-        self.set_zerro("XY")
+        self.set_zerro("X")
 
     # Ly OUT
     @ensure_errors_dismissed
     def on_ly_out_released(self, gtkbutton, data=None):
         # move Y - edge_length- xy_clearance
         tmpy = self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 Y-%f
         G90""" % (
-            tmpy
+            self.setunits, tmpy
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
             return
@@ -1855,10 +1992,11 @@ class ProbeScreen(object):
 
         # move Y + 2 edge_length +  xy_clearance
         tmpy = 2 * self.halcomp["ps_edge_length"] + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 Y%f
         G90""" % (
-            tmpy
+            self.setunits, tmpy
         )
         if self.gcode(s, 2*self.halcomp["ps_edge_length"]) == -1:
             return
@@ -1889,7 +2027,7 @@ class ProbeScreen(object):
         s = "G1 Y%f" % (ycres)
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
             return
-        self.set_zerro("XY")
+        self.set_zerro("Y")
 
     # Lx IN
     @ensure_errors_dismissed
@@ -1898,10 +2036,11 @@ class ProbeScreen(object):
             return
         # move X - edge_length Y + xy_clearance
         tmpx = self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f
         G90""" % (
-            tmpx
+            self.setunits, tmpx
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
             return
@@ -1914,10 +2053,11 @@ class ProbeScreen(object):
 
         # move X +2 edge_length - 2 xy_clearance
         tmpx = 2 * (self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"])
-        s = """G91
+        s = """%s
+        G91
         G1 X%f
         G90""" % (
-            tmpx
+            self.setunits, tmpx
         )
         if self.gcode(s, 2*self.halcomp["ps_edge_length"]) == -1:
             return
@@ -1944,7 +2084,7 @@ class ProbeScreen(object):
         # move Z to start point
         if self.z_clearance_up() == -1:
             return
-        self.set_zerro("XY")
+        self.set_zerro("X")
 
     # Ly IN
     @ensure_errors_dismissed
@@ -1953,10 +2093,11 @@ class ProbeScreen(object):
             return
         # move Y - edge_length + xy_clearance
         tmpy = self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 Y-%f
         G90""" % (
-            tmpy
+            self.setunits, tmpy
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
             return
@@ -1970,10 +2111,11 @@ class ProbeScreen(object):
 
         # move Y +2 edge_length - 2 xy_clearance
         tmpy = 2 * (self.halcomp["ps_edge_length"] - self.halcomp["ps_xy_clearance"])
-        s = """G91
+        s = """%s
+        G91
         G1 Y%f
         G90""" % (
-            tmpy
+            self.setunits, tmpy
         )
         if self.gcode(s, 2*self.halcomp["ps_edge_length"]) == -1:
             return
@@ -2003,54 +2145,8 @@ class ProbeScreen(object):
         # move Z to start point
         if self.z_clearance_up() == -1:
             return
-        self.set_zerro("XY")
+        self.set_zerro("Y")
 
-
-    #---------------------------
-    # Remap M6 metods
-    #---------------------------
-
-    # Read the ini file config [TOOLSENSOR] section
-    def _init_tool_sensor_data(self):
-        xpos = self.inifile.find("TOOLSENSOR", "X")
-        ypos = self.inifile.find("TOOLSENSOR", "Y")
-        zpos = self.inifile.find("TOOLSENSOR", "Z")
-        maxprobe = self.inifile.find("TOOLSENSOR", "MAXPROBE")
-        tsdiam = self.inifile.find("TOOLSENSOR", "TS_DIAMETER")
-        tsdiam = self.inifile.find("TOOLSENSOR", "TS_DIAMETER")
-        ps_rapid_speed = self.inifile.find("TOOLSENSOR", "RAPID_SPEED")
-
-        if (
-            xpos is None
-            or ypos is None
-            or zpos is None
-            or maxprobe is None
-            or tsdiam is None
-            or ps_rapid_speed is None
-        ):
-            self.btn_tool_dia.set_sensitive(False)
-            self.btn_probe_tool_setter.set_sensitive(False)
-
-            self.error_dialog(
-                "Invalid INI Configuration",
-                secondary="Please check the TOOLSENSOR INI configurations",
-            )
-        else:
-            self.xpos = float(xpos)
-            self.ypos = float(ypos)
-            self.zpos = float(zpos)
-            self.maxprobe = float(maxprobe)
-            self.tsdiam = float(tsdiam)
-            self.ps_rapid_speed = float(ps_rapid_speed)
-
-            self.spbtn_setter_height.set_value(
-                self.prefs.getpref("setterheight", 0.0, float)
-            )
-            self.spbtn_block_height.set_value(
-                self.prefs.getpref("blockheight", 0.0, float)
-            )
-            self.halcomp["setterheight"] = self.spbtn_setter_height.get_value()
-            self.halcomp["blockheight"] = self.spbtn_block_height.get_value()
 
 
     # --------------
@@ -2098,10 +2194,11 @@ class ProbeScreen(object):
             - self.stat.tool_offset[0]
         )
         # move Y - xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 Y-%f
         G90""" % (
-            self.halcomp["ps_xy_clearance"]
+            self.setunits, self.halcomp["ps_xy_clearance"]
         )
         if self.gcode(s) == -1:
             return
@@ -2118,10 +2215,11 @@ class ProbeScreen(object):
         if self.z_clearance_up() == -1:
             return
         # move X + edge_length
-        s = """G91
+        s = """%s
+        G91
         G1 X%f
         G90""" % (
-            self.halcomp["ps_edge_length"]
+            self.setunits, self.halcomp["ps_edge_length"]
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
             return
@@ -2163,10 +2261,11 @@ class ProbeScreen(object):
             - self.stat.tool_offset[0]
         )
         # move Y + xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 Y%f
         G90""" % (
-            self.halcomp["ps_xy_clearance"]
+            self.setunits, self.halcomp["ps_xy_clearance"]
         )
         if self.gcode(s) == -1:
             return
@@ -2183,10 +2282,11 @@ class ProbeScreen(object):
         if self.z_clearance_up() == -1:
             return
         # move X - edge_length
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f
         G90""" % (
-            self.halcomp["ps_edge_length"]
+            self.setunits, self.halcomp["ps_edge_length"]
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
             return
@@ -2227,10 +2327,11 @@ class ProbeScreen(object):
             - self.stat.tool_offset[1]
         )
         # move X - xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f
         G90""" % (
-            self.halcomp["ps_xy_clearance"]
+            self.setunits, self.halcomp["ps_xy_clearance"]
         )
         if self.gcode(s) == -1:
             return
@@ -2247,10 +2348,11 @@ class ProbeScreen(object):
         if self.z_clearance_up() == -1:
             return
         # move Y - edge_length
-        s = """G91
+        s = """%s
+        G91
         G1 Y-%f
         G90""" % (
-            self.halcomp["ps_edge_length"]
+            self.setunits, self.halcomp["ps_edge_length"]
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
             return
@@ -2291,10 +2393,11 @@ class ProbeScreen(object):
             - self.stat.tool_offset[1]
         )
         # move X + xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 X%f
         G90""" % (
-            self.halcomp["ps_xy_clearance"]
+            self.setunits, self.halcomp["ps_xy_clearance"]
         )
         if self.gcode(s) == -1:
             return
@@ -2311,10 +2414,11 @@ class ProbeScreen(object):
         if self.z_clearance_up() == -1:
             return
         # move Y + edge_length
-        s = """G91
+        s = """%s
+        G91
         G1 Y%f
         G90""" % (
-            self.halcomp["ps_edge_length"]
+            self.setunits, self.halcomp["ps_edge_length"]
         )
         if self.gcode(s, self.halcomp["ps_edge_length"]) == -1:
             return
@@ -2731,7 +2835,47 @@ class ProbeScreen(object):
         c = "Workpiece Height = " + "%.4f" % gtkspinbutton.get_value()
         self.add_history_text(c)
 
+
+    #---------------------------
+    # Remap M6 metods
+    #---------------------------
+
+    # Read the ini file config [TOOLSENSOR] section
+    def _init_tool_sensor_data(self):
+        xpos = self.inifile.find("TOOLSENSOR", "X")
+        ypos = self.inifile.find("TOOLSENSOR", "Y")
+        zpos = self.inifile.find("TOOLSENSOR", "Z")
+        maxprobe = self.inifile.find("TOOLSENSOR", "MAXPROBE")
+        tsdiam = self.inifile.find("TOOLSENSOR", "TS_DIAMETER")
+        ps_rapid_speed = self.inifile.find("TOOLSENSOR", "RAPID_SPEED")
+
+        if (
+            xpos is None
+            or ypos is None
+            or zpos is None
+            or maxprobe is None
+            or tsdiam is None
+            or ps_rapid_speed is None
+        ):
+            self.btn_tool_dia.set_sensitive(False)
+            self.btn_probe_tool_setter.set_sensitive(False)
+
+            self.error_dialog(
+                "Invalid INI Configuration",
+                secondary="Please check the TOOLSENSOR INI configurations",
+            )
+        else:
+            self.xpos = float(xpos)
+            self.ypos = float(ypos)
+            self.zpos = float(zpos)
+            self.maxprobe = float(maxprobe)
+            self.tsdiam = float(tsdiam)
+            self.ps_rapid_speed = float(ps_rapid_speed)
+
+
+
     # Down probe to table for measuring it and use for calculate tool setter height and can set G10 L20 Z0 if you tick auto zero
+    # Z-
     @ensure_errors_dismissed
     def on_btn_probe_table_released(self, gtkbutton, data=None):
         # Start psng_probe_table.ngc
@@ -2748,7 +2892,15 @@ class ProbeScreen(object):
         if self.ocode("o<psng_probe_tool_setter> call") == -1:
             return
         self.vcp_reload()
-        a = self.stat.probed_position
+        # self.stat.linear_units will return machine units: 1.0 for metric and 1/25,4 for imperial
+        # self.halcomp["ps_metric_mode"] is display units
+        factor=1
+        if self.halcomp["ps_metric_mode"] != int(self.stat.linear_units):
+            if self.halcomp["ps_metric_mode"]:
+                factor = 25.4
+            else:
+                factor = (1.0 / 25.4)
+        a = self.stat.probed_position*factor
         self.spbtn_setter_height.set_value(float(a[2]))
         self.add_history(gtkbutton.get_tooltip_text(), "Z", z=a[2])
         direction=-1
@@ -2759,7 +2911,7 @@ class ProbeScreen(object):
             else:
                 extra_travel = self.spbtn1_search_vel.get_value() * self.spbtn_signal_delay.get_value() * direction / 60000
         self.spbtn_setter_height.set_value(float(a[2]) - extra_travel)
-        self.label_val_overmove.set_text( "%.5f" % extra_travel )            
+        self.label_val_overmove.set_text( " = %.5f" % extra_travel )            
 
     # Down probe to workpiece for measuring it vs Know tool setter height
     @ensure_errors_dismissed
@@ -2768,7 +2920,15 @@ class ProbeScreen(object):
         if self.ocode("o<psng_probe_workpiece> call") == -1:
             return
         self.vcp_reload()
-        a = self.stat.probed_position 
+        # self.stat.linear_units will return machine units: 1.0 for metric and 1/25,4 for imperial
+        # self.halcomp["ps_metric_mode"] is display units
+        factor=1
+        if self.halcomp["ps_metric_mode"] != int(self.stat.linear_units):
+            if self.halcomp["ps_metric_mode"]:
+                factor = 25.4
+            else:
+                factor = (1.0 / 25.4)
+        a = self.stat.probed_position*factor 
         self.spbtn_block_height.set_value(float(a[2]))
         self.add_history(gtkbutton.get_tooltip_text(), "Z", z=a[2])
         direction=-1
@@ -2779,7 +2939,7 @@ class ProbeScreen(object):
             else:
                 extra_travel = self.spbtn1_search_vel.get_value() * self.spbtn_signal_delay.get_value() * direction / 60000
         self.spbtn_block_height.set_value(float(a[2]) - extra_travel)
-        self.label_val_overmove.set_text( "%.5f" % extra_travel )            
+        self.label_val_overmove.set_text( " = %.5f" % extra_travel )            
 
     # Probe tool Diameter
     @ensure_errors_dismissed
@@ -2789,9 +2949,11 @@ class ProbeScreen(object):
         if self.ocode("o<psng_tool_diameter> call") == -1:
             return
         # move X - edge_length- xy_clearance
-        s = """G91
+        s = """%s
+        G91
         G1 X-%f
         G90""" % (
+            self.setunits, 
             0.5 * self.tsdiam + self.halcomp["ps_xy_clearance"]
         )
         if self.gcode(s) == -1:
@@ -2815,9 +2977,11 @@ class ProbeScreen(object):
 
         # move X + tsdiam +  xy_clearance
         aa = self.tsdiam + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 X%f
         G90""" % (
+            self.setunits, 
             aa
         )
         if self.gcode(s) == -1:
@@ -2842,11 +3006,12 @@ class ProbeScreen(object):
 
         # move Y - tsdiam/2 - xy_clearance
         a = 0.5 * self.tsdiam + self.halcomp["ps_xy_clearance"]
-        s = (
-            """G91
+        s = """%s
+            G91
         G1 Y-%f
-        G90"""
-            % a
+        G90""" % (
+            self.setunits,
+            a
         )
         if self.gcode(s) == -1:
             return
@@ -2868,9 +3033,11 @@ class ProbeScreen(object):
 
         # move Y + tsdiam +  xy_clearance
         aa = self.tsdiam + self.halcomp["ps_xy_clearance"]
-        s = """G91
+        s = """%s
+        G91
         G1 Y%f
         G90""" % (
+            self.setunits, 
             aa
         )
         if self.gcode(s) == -1:

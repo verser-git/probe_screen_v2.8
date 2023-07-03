@@ -11,6 +11,9 @@ Probe Screen v2.8 - all commonly used probe macros on one stylish screen, intuit
 - Included some additions from the PSNG development team
 - Added a number of useful features
 
+Last update v2.8.1
+- Second attempt to support metric and imperial systems. Added sensitivity Probe Screen to MDI commands G20, G21.
+
 ## Install
 
 1. See "psng/install_del_from_your.hal"

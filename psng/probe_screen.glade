@@ -119,6 +119,9 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="EMC_Stat" id="ps_hal_stat">
+    <signal name="metric-mode-changed" handler="on_ps_hal_stat_metric_mode_changed" swapped="no"/>
+  </object>
   <object class="EMC_Action_Reload" id="vcp_action_reload"/>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>
@@ -2654,7 +2657,7 @@
                                     <property name="app_paintable">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="xalign">0.80000001192092896</property>
-                                    <property name="label" translatable="yes">Overmove (mm):</property>
+                                    <property name="label" translatable="yes">Overmove</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">2</property>
