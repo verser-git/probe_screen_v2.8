@@ -2900,8 +2900,8 @@ class ProbeScreen(object):
                 factor = 25.4
             else:
                 factor = (1.0 / 25.4)
-        a = self.stat.probed_position*factor
-        self.spbtn_setter_height.set_value(float(a[2]))
+        a = self.stat.probed_position
+        self.spbtn_setter_height.set_value(float(a[2])*factor)
         self.add_history(gtkbutton.get_tooltip_text(), "Z", z=a[2])
         direction=-1
         extra_travel=0
@@ -2928,8 +2928,8 @@ class ProbeScreen(object):
                 factor = 25.4
             else:
                 factor = (1.0 / 25.4)
-        a = self.stat.probed_position*factor 
-        self.spbtn_block_height.set_value(float(a[2]))
+        a = self.stat.probed_position 
+        self.spbtn_block_height.set_value(float(a[2])*factor)
         self.add_history(gtkbutton.get_tooltip_text(), "Z", z=a[2])
         direction=-1
         extra_travel=0
