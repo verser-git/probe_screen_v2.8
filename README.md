@@ -13,6 +13,7 @@ Probe Screen v2.8 - all commonly used probe macros on one stylish screen, intuit
 
 Update v2.8.2
 - Fixed some issue with unnecessary pauses and stops.
+
 Update v2.8.1
 - Second attempt to support metric and imperial systems. Added sensitivity Probe Screen to MDI commands G20, G21.
 
