@@ -33,9 +33,9 @@ O1 endif
 (print,Move off the Tool Sensor !!! HARD FIXED VALUE 4mm or 0.16inch)
 G91
 O2 if [#<_metric> EQ 1]
-  G0 Z4  F[#<_ini[TOOLSENSOR]RAPID_SPEED>]
+  G1 Z4  F[#<_ini[TOOLSENSOR]RAPID_SPEED>]
 O2 else
-  G0 Z0.16  F[#<_ini[TOOLSENSOR]RAPID_SPEED>]
+  G1 Z0.16  F[#<_ini[TOOLSENSOR]RAPID_SPEED>]
 O2 endif
 G90
 

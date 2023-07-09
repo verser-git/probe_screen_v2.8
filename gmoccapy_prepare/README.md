@@ -41,37 +41,16 @@ It is necessary to add the following lines in three places
             self.widgets.ntb_jog.set_current_page(0)
             return
 
-        # if MDI button is not sensitive, we are not ready for MDI commands
-        # so we have to abort external commands and get back to manual mode
-        # This will happen mostly, if we are in settings mode, as we do disable the mode button
-        if not self.widgets.rbt_mdi.get_sensitive():
-            self.command.abort()
-            self.command.mode(linuxcnc.MODE_MANUAL)
-            self.command.wait_complete()
-            self._show_error((13, _("It is not possible to change to MDI Mode at the moment")))
+        if self.widgets.tbtn_user_tabs.get_active():
             return
-        else:
-            # if we are in user tabs, we must reset the button
-            if self.widgets.tbtn_user_tabs.get_active():
-                return
     ...
    ```
 3.
    ```sh
     def on_hal_status_mode_auto(self, widget):
         print ("AUTO Mode")
-        # if Auto button is not sensitive, we are not ready for AUTO commands
-        # so we have to abort external commands and get back to manual mode
-        # This will happen mostly, if we are in settings mode, as we do disable the mode button
-        if not self.widgets.rbt_auto.get_sensitive():
-            self.command.abort()
-            self.command.mode(linuxcnc.MODE_MANUAL)
-            self.command.wait_complete()
-            self._show_error((13, _("It is not possible to change to Auto Mode at the moment")))
+        if self.widgets.tbtn_user_tabs.get_active():
             return
-        else:
-            if self.widgets.tbtn_user_tabs.get_active():
-                return
     ...
    ```
 

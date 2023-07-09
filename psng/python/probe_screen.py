@@ -2891,7 +2891,7 @@ class ProbeScreen(object):
         # Start psng_probe_tool_setter.ngc
         if self.ocode("o<psng_probe_tool_setter> call") == -1:
             return
-        self.vcp_reload()
+#        self.vcp_reload()
         # self.stat.linear_units will return machine units: 1.0 for metric and 1/25,4 for imperial
         # self.halcomp["ps_metric_mode"] is display units
         factor=1
@@ -2919,7 +2919,7 @@ class ProbeScreen(object):
         # Start psng_probe_workpiece.ngc
         if self.ocode("o<psng_probe_workpiece> call") == -1:
             return
-        self.vcp_reload()
+#        self.vcp_reload()
         # self.stat.linear_units will return machine units: 1.0 for metric and 1/25,4 for imperial
         # self.halcomp["ps_metric_mode"] is display units
         factor=1

@@ -26,7 +26,7 @@ O1 else if [#<_value> EQ -3]
 O1 endif
 
 ; Move back to starting X position
-G0 X#<x> F#<_ini[TOOLSENSOR]RAPID_SPEED>
+G1 X#<x> F#<_ini[TOOLSENSOR]RAPID_SPEED>
 
 ; BEGIN PSNG POSTAMBLE
 M71 ; Invalidate Modal Autorestore
