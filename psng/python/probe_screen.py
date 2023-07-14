@@ -193,6 +193,7 @@ class ProbeScreen(object):
         self.hal_led_auto_rott = self.builder.get_object("hal_led_auto_rott")
         self.chk_auto_rott = self.builder.get_object("chk_auto_rott")
         self.spbtn_offs_angle = self.builder.get_object("spbtn_offs_angle")
+        self.lbl_current_angle = self.builder.get_object("lbl_current_angle")
         self.btn_rot_hole1 = self.builder.get_object("btn_rot_hole1")
         self.btn_rot_hole2 = self.builder.get_object("btn_rot_hole2")
 
@@ -206,8 +207,7 @@ class ProbeScreen(object):
         self.hal_led_auto_rott.hal_pin.set(self.chk_auto_rott.get_active())
         
         self.halcomp["ps_offs_angle"] = self.spbtn_offs_angle.get_value()
-
-
+        self.lbl_current_angle.set_text("%.3f" % self.stat.rotation_xy)
 
         #---------------------------
         # Zero (Touch Off) vars
@@ -521,6 +521,12 @@ class ProbeScreen(object):
         # Save units
         self.halcomp["ps_metric_mode"] = metric_units 
         self.prefs.putpref("ps_metric_mode", metric_units, bool) 
+
+
+    def on_ps_hal_stat_current_z_rotation(self, widget, angle):
+        self.lbl_current_angle.set_text("%.3f" % angle)
+        #self.stat.rotation_xy()
+    
 
     # --------------------------
     #

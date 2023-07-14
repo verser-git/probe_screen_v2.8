@@ -11,6 +11,11 @@ Probe Screen v2.8 - all commonly used probe macros on one stylish screen, intuit
 - Included some additions from the PSNG development team
 - Added a number of useful features
 
+## Update history
+
+Update v2.8.3
+- Improvements in 'Rotate' and 'ERR pin proccessing'.
+
 Update v2.8.2
 - Fixed some issue with unnecessary pauses and stops.
 
