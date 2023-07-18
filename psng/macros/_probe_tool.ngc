@@ -1,4 +1,4 @@
-o<_tool_measuring> sub
+o<_probe_tool> sub
 
 ; Save and autorestore model states
 M73
@@ -81,5 +81,5 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
 
 O7 endif
     
-o<_tool_measuring> endsub [0]
+o<_probe_tool> endsub [0]
 M2
