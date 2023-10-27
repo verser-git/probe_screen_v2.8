@@ -31,7 +31,8 @@ G91
 F[#<_hal[probe.ps_searchvel]>]
 
 ; Force LinuxCNC to refresh hal pin states prior to reading HAL pin
-M66 E0 L0
+M66 P0 L0
+;(debug, Check or wait for input=#5399)
 
 ; Check if probe is already tripped
 O10 if [#<_hal[motion.probe-input]> EQ 1]
@@ -60,7 +61,7 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
     F[#<_hal[probe.ps_probevel]>]
 
     ; Force LinuxCNC to refresh hal pin states prior to reading HAL pin
-    M66 E0 L0
+    M66 P0 L0
 
     ; Check if probe is already tripped
     O21 if [#<_hal[motion.probe-input]> EQ 1]
@@ -68,8 +69,7 @@ O7 if [#<_hal[probe.chk_use_fine]> GT 0]
     O21 endif
 
     ; Perform the Probe
-    G38.3 Z[#<_hal[probe.ps_probe_latch]>*2*#<search_direction>]
-        
+    G38.3 Z[#<_hal[probe.ps_probe_latch]>*2*#<search_direction>]        
     ; Check to see if we failed to make contact
     O25 if [#5070 EQ 0]
         O25 return [-2]

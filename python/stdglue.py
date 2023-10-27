@@ -165,6 +165,8 @@ def change_prolog(self, **words):
         return INTERP_ERROR
 
 def change_epilog(self, **words):
+;    print("value_returned =", self.value_returned)
+;    print("return_value =", self.return_value)
     try:
         if not self.value_returned:
             r = self.blocks[self.remap_level].executing_remap
@@ -179,8 +181,16 @@ def change_epilog(self, **words):
             print "change_epilog: Toolchanger soft fault %d" % int(self.params[5601])
 
         if self.blocks[self.remap_level].builtin_used:
-            #print "---------- M6 builtin recursion, nothing to do"
-            yield INTERP_OK
+            if self.return_value > 0.0:
+                print "---------- M6 builtin recursion, nothing to do"
+                yield INTERP_OK
+            else:
+                if self.return_value == -3 :
+                    err_msg_probe = " :probe already tripped"
+                if self.return_value == -4 :
+                    err_msg_probe = " :probe contact failure"
+                self.set_errormsg("M6 aborted (return code %.1f %s)" % (self.return_value, err_msg_probe))
+                yield INTERP_ERROR
         else:
             if self.return_value > 0.0:
                 # commit change
@@ -194,7 +204,11 @@ def change_epilog(self, **words):
                 self.toolchange_flag = True
                 yield INTERP_EXECUTE_FINISH
             else:
-                self.set_errormsg("M6 aborted (return code %.1f)" % (self.return_value))
+                if self.return_value == -3 :
+                    err_msg_probe = " :probe already tripped"
+                if self.return_value == -4 :
+                    err_msg_probe = " :probe contact failure"
+                self.set_errormsg("M6 aborted (return code %.1f %s)" % (self.return_value, err_msg_probe))
                 yield INTERP_ERROR
     except Exception, e:
         self.set_errormsg("M6/change_epilog: %s" % (e))
