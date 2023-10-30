@@ -165,8 +165,8 @@ def change_prolog(self, **words):
         return INTERP_ERROR
 
 def change_epilog(self, **words):
-;    print("value_returned =", self.value_returned)
-;    print("return_value =", self.return_value)
+#    print("value_returned =", self.value_returned)
+#    print("return_value =", self.return_value)
     try:
         if not self.value_returned:
             r = self.blocks[self.remap_level].executing_remap
