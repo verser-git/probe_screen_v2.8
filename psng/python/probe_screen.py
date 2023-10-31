@@ -2476,8 +2476,8 @@ class ProbeScreen(object):
             - self.stat.g92_offset[1]
             - self.stat.tool_offset[1]
         )
-        lenght_hole2 = math.sqrt(x_hole2*x_hole2 + y_hole2*y_hole2)
-        alfa = math.degrees(math.atan2(y_hole2,lenght_hole2))
+        dist_to_hole2 = math.sqrt(x_hole2*x_hole2 + y_hole2*y_hole2)
+        alfa = math.degrees(math.atan2(y_hole2,x_hole2))
         self.add_history(
             gtkbutton.get_tooltip_text(),
             "XcYcA",
@@ -2495,8 +2495,8 @@ class ProbeScreen(object):
         s += " R%s" % alfa
         self.gcode(s)
         s = "G10 L20 P0"
-        s += " X%s" % x_hole2
-        s += " Y%s" % y_hole2
+        s += " X%s" % dist_to_hole2
+        s += " Y0"
         self.gcode(s)
         self.vcp_reload()
         time.sleep(1)
