@@ -77,7 +77,7 @@ In fact, you can use the application immediately after the Home.
 
 Any of the search ends at XY moving at the desired point (or edge, or corner, or center), Z remains in the original position.
 
-More info <https://vers.ge/en/blog/useful-articles/probe-screen-v28>
+More info <https://vers.ge/content/19-probe-screen-v28>
 Discussion on the forum linuxcnc.org: <https://forum.linuxcnc.org/49-basic-configuration/29187-work-with-probe>
 
 ## License
